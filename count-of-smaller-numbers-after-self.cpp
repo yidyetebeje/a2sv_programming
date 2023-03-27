@@ -12,27 +12,28 @@ public:
         return merge(left, right);
     }
     vector<pair<int,int>> merge(vector<pair<int,int>>& left, vector<pair<int,int>>& right){
-        vector<pair<int, int>> merged;
+        vector<pair<int, int>> merged(left.size() + right.size());
         int n = left.size();
         int m = right.size();
-        int i = 0, j = 0;
+        int i = 0, j = 0, k = 0;
         int count = 0;
         while(i < n && j < m){
             if(left[i] < right[j]){
-                merged.push_back(left[i]);
+                merged[k] = left[i];
                 res[left[i].second] += count;
                 i++; 
             } else if(right[j] <= left[i]){
-                merged.push_back(right[j]);
+                merged[k] = right[j];
                 count++;
                 j++;
             }
+            k++;
         }
         while(i < n){
             res[left[i].second] += count;
-            merged.push_back(left[i++]);
+            merged[k++] = (left[i++]);
         }
-        while(j < m) merged.push_back(right[j++]);
+        while(j < m) merged[k++] = (right[j++]);
         return merged;
     }
     vector<int> countSmaller(vector<int>& nums) {
