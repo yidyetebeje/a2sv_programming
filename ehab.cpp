@@ -27,25 +27,32 @@ ll powe(ll x, ll y)
     }
     return ans;
 }
-void solve(vector<int>& vi)
+void solve()
 {
-    int n = vi.size();
-    for (int i = 0; i < n; i++){
-        int swapIndex = 0;
-    }
-    for(auto i: vi){
-        cout << i << " ";
-    }
 }
 signed main()
 {
     fast;
-    int n = 0;
-    cin >> n;
-    vector<int> v(n);
-    for (int i = 0; i < n; i++){
-        cin >> v[i];
+    int n; cin>>n;
+    ll a[n];
+    int odd=0,even=0;
+    for(int i=0;i<n;i++){
+        cin>>a[i];
+        if(a[i]&1)odd++;
+        else even++;
     }
-    solve(v);
+    if(odd && even){
+        sort(a,a+n);
+        for(int i=0;i<n;i++){
+            cout<<a[i]<<" ";
+        }
+        cout<<endl;
+    }
+    else{
+        for(int i=0;i<n;i++){
+            cout<<a[i]<<" ";
+        }
+        cout<<endl;
+    }
     return 0;
 }
