@@ -1,0 +1,24 @@
+use std::cmp::min;
+fn rec(n: usize, len: usize, sz: usize, dp:&mut Vec<Vec<i32>>)-> i32{
+    if len > sz {
+        return 100000;
+    }
+    if len == sz {
+        return 1;
+    }
+    if dp[n][len] != -1 {
+        return dp[n][len];
+    }
+    dp[n][len] = min(2 + rec(len, len + len, sz, dp), 1 + rec(n, len + n,sz, dp));
+    dp[n][len]
+}
+impl Solution {
+    pub fn min_steps(n: i32) -> i32 {
+        if n == 1 {
+            return 0;
+        }
+        let x = n as usize;
+        let mut dp = vec![vec![-1 as i32;x];x];
+        return rec(1,1, x, &mut dp);
+    }
+}
