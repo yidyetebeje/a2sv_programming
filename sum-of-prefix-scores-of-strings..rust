@@ -1,0 +1,65 @@
+use std::collections::HashMap;
+struct TrieNode {
+    children: HashMap<char,TrieNode>,
+    is_word: bool,
+    prefix: i32
+}
+
+impl TrieNode {
+    fn new() -> Self {
+        TrieNode {children: HashMap::new(), is_word: false, prefix: 0}
+    }   
+}
+
+
+struct Trie {
+    root: TrieNode,
+}
+
+impl Trie {
+
+    fn new() -> Self {
+        Trie {root: TrieNode::new()}
+    }
+    
+    fn insert(&mut self, word: String) {
+        let mut current_node = &mut self.root;
+        
+        for c in word.chars() {
+            let next_node = current_node.children.entry(c)
+                            .or_insert(TrieNode::new());
+            next_node.prefix += 1;
+            current_node = next_node;
+        }
+        
+        current_node.is_word = true;
+    }
+    
+    fn search(&self, word: String) -> i32 {
+        let mut current_node = &self.root;
+        let mut ans = 0;
+        for c in word.chars() {
+            ans += current_node.prefix;
+            match current_node.children.get(&c) {
+                Some(next_node) => current_node = next_node,
+                None => return 0,
+            }
+        }
+        ans += current_node.prefix;
+        return ans;
+    }
+}
+impl Solution {
+    pub fn sum_prefix_scores(words: Vec<String>) -> Vec<i32> {
+        let mut trie = Trie::new();
+        for word in &words{
+            trie.insert(word.to_string());
+        } 
+        let mut ans: Vec<i32> = Vec::new();
+        for word in words {
+            let a = trie.search(word);
+            ans.push(a);
+        }
+        return ans;
+    }
+}
