@@ -1,0 +1,68 @@
+use std::collections::HashMap;
+struct TrieNode {
+    children: HashMap<char,TrieNode>,
+    is_word: bool,
+}
+
+impl TrieNode {
+    fn new() -> Self {
+        TrieNode {children: HashMap::new(), is_word: false}
+    }   
+}
+
+
+struct Trie {
+    root: TrieNode,
+}
+
+impl Trie {
+
+    fn new() -> Self {
+        Trie {root: TrieNode::new()}
+    }
+    
+    fn insert(&mut self, word: String) {
+        let mut current_node = &mut self.root;
+        
+        for c in word.chars() {
+            let next_node = current_node.children.entry(c)
+                            .or_insert(TrieNode::new());
+            current_node = next_node;
+        }
+        current_node.is_word = true;
+    }
+    
+    fn search(&self, word: String) -> String {
+        let mut current_node = &self.root;
+        for (i,c) in word.chars().enumerate() {
+            match current_node.children.get(&c) {
+                Some(next_node) => if next_node.is_word {
+                    current_node = next_node
+                } else {
+                    return word[0..i].to_string();
+                },
+                None => (),
+            }
+        }
+        return word;
+    }
+   
+}
+impl Solution {
+    pub fn longest_word(words: Vec<String>) -> String {
+        let mut trie = Trie::new();
+        for i in &words {
+            trie.insert(i.to_string());
+        }
+        let mut maxS = String::new();
+        for i in words {
+            let currMax = trie.search(i);
+            if currMax.len() > maxS.len() {
+                maxS = currMax;
+            } else if currMax.len() == maxS.len() && currMax < maxS {
+                maxS = currMax;
+            }
+        }
+        maxS
+    }
+}
