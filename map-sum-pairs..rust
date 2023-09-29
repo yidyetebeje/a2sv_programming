@@ -1,0 +1,85 @@
+use std::collections::HashMap;
+use std::collections::VecDeque;
+
+struct TrieNode {
+    children: HashMap<char,TrieNode>,
+    is_word: bool,
+    sum: i32,
+}
+
+impl TrieNode {
+    fn new() -> Self {
+        TrieNode {children: HashMap::new(), is_word: false, sum:0}
+    }   
+}
+struct MapSum {
+    root: TrieNode,
+    exist: HashMap<String,i32>,
+}
+
+
+/** 
+ * `&self` means the method takes an immutable reference.
+ * If you need a mutable reference, change it to `&mut self` instead.
+ */
+impl MapSum {
+
+    fn new() -> Self {
+        MapSum {root: TrieNode::new(), exist: HashMap::new()}
+    }
+    
+    fn insert(&mut self, key: String, val: i32) {
+        let prev = self.exist.get(&key).unwrap_or(&0);
+        let prev = prev.clone();
+        {
+            self.exist.insert(key.clone(), val);
+        }
+        let mut current_node = &mut self.root;
+        
+        for c in key.chars() {
+            let next_node = current_node.children.entry(c)
+                            .or_insert(TrieNode::new());
+            current_node.sum += val;
+            current_node.sum -= prev;
+            current_node = next_node;
+        }
+        println!("before {} {}", current_node.sum, prev);
+        current_node.sum -= prev;
+        current_node.sum += val;
+        println!("after {}", current_node.sum);
+        current_node.is_word = true;
+    }
+    fn search(&self, word: String) -> i32 {
+        let mut current_node = &self.root;
+        
+        for c in word.chars() {
+            match current_node.children.get(&c) {
+                Some(next_node) => current_node = next_node,
+                None => return 0,
+            }
+        }
+        
+        if current_node.is_word {
+            current_node.sum
+        } else {
+            0
+        }
+    }
+    fn sum(&self, prefix: String) -> i32 {
+        let mut current_node = &self.root;
+        for c in prefix.chars() {
+            match current_node.children.get(&c) {
+                Some(next_node) => current_node = next_node,
+                None => return 0,
+            }
+        }
+        current_node.sum
+    }
+}
+
+/**
+ * Your MapSum object will be instantiated and called as such:
+ * let obj = MapSum::new();
+ * obj.insert(key, val);
+ * let ret_2: i32 = obj.sum(prefix);
+ */
