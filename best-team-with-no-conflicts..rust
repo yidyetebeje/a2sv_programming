@@ -1,0 +1,33 @@
+use std::cmp::max;
+pub fn recursive(i: i32, prev: i32, paired: &Vec<(&i32, &i32)> , dp: &mut Vec<Vec<i32>> )->i32 {
+    if i < 0 {
+        return 0;
+    }
+    let i = i as usize;
+    let j = prev as usize;
+    if prev != 1001 && paired[i].1 > paired[j].1 {
+        return recursive((i -1) as i32, prev, paired, dp);
+    }
+    if dp[i][j] != -1 {
+        return dp[i][j];
+    }
+    let i = i as i32;
+    let k = i as usize;
+
+    dp[k][j] = max(paired[k].1 + recursive(i - 1, i, paired, dp), recursive(i - 1, prev, paired, dp));
+    dp[k][j]
+}
+impl Solution {
+    pub fn best_team_score(scores: Vec<i32>, ages: Vec<i32>) -> i32 {
+        let t = (scores.len() - 1) as i32;
+        let mut dp = vec![vec![-1 as i32;1002];scores.len()];
+        let mut paired: Vec<(&i32, &i32)> = ages.iter().zip(scores.iter()).collect();
+        paired.sort_by(|pair1, pair2| if pair1.0 == pair2.0 {
+        pair1.1.cmp(&pair2.1)
+    } else {
+        pair1.0.cmp(&pair2.0)
+    });
+        println!("{:?}", paired);
+        return recursive(t, 1001, &paired, &mut dp);
+    }
+}
