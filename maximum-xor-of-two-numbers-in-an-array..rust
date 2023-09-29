@@ -1,0 +1,58 @@
+const N_LETTERS: usize = 2;
+
+#[derive(Default)]
+struct TrieNode {
+    children: [usize; N_LETTERS],
+}
+
+struct Trie {
+    nodes: Vec<TrieNode>,
+}
+
+impl Trie {
+    fn new() -> Self {
+        Self{nodes: vec![TrieNode::default()]}
+    }
+
+    fn insert(&mut self, num: i32) {
+        let mut bm = 1 << 30;
+        let mut i = 0;
+        while bm > 0 {
+            let c = (num & bm != 0) as usize;
+            if self.nodes[i].children[c] == 0 {
+                self.nodes[i].children[c] = self.nodes.len();
+                self.nodes.push(TrieNode::default())
+            }
+            i = self.nodes[i].children[c];
+            bm >>= 1;
+        }
+    }
+
+    fn find(&self, num: i32) -> i32 {
+        let mut bm = 1 << 30;
+        let mut rez = 0;
+        let mut i = 0;
+        while bm > 0 {
+            rez <<= 1;
+            let mut c = !(num & bm != 0) as usize;
+            if self.nodes[i].children[c] == 0 {
+                c ^= 1;
+            } else {
+                rez |= 1;
+            }
+            i = self.nodes[i].children[c];
+            bm >>= 1;
+        }
+        rez
+    }
+}
+
+impl Solution {
+    pub fn find_maximum_xor(nums: Vec<i32>) -> i32 {
+        let mut trie = Trie::new();
+        for num in nums.iter() {
+            trie.insert(*num);
+        }
+        nums.into_iter().map(|num| trie.find(num)).max().unwrap()
+    }
+}
