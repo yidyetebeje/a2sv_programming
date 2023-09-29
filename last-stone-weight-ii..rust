@@ -1,0 +1,23 @@
+use std::cmp::min;
+use std::collections::HashMap;
+pub fn recursive(i: usize, sum: i32, stones: &Vec<i32>, dp: &mut HashMap<(usize, i32), i32>)-> i32 {
+    if i == stones.len() {
+        if sum < 0 {
+            return i32::MAX;
+        }
+        return sum;
+    }
+    if dp.contains_key(&(i, sum)){
+        return *dp.get(&(i, sum)).unwrap();
+    }
+    
+    let ans = min(recursive(i + 1, sum - stones[i], stones, dp), recursive(i +1, sum + stones[i], stones, dp));
+    dp.insert((i, sum), ans);
+    return ans;
+}
+impl Solution {
+    pub fn last_stone_weight_ii(stones: Vec<i32>) -> i32 {
+        let mut dp: HashMap<(usize, i32), i32> = HashMap::new();
+        return recursive(0,0, &stones, &mut dp);
+    }
+}
