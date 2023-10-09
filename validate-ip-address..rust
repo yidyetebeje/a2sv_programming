@@ -1,0 +1,59 @@
+use std::cmp::*;
+
+
+pub fn check_ip_v4(ipv4: Vec<&str> )->bool{
+        for seg in ipv4 {
+            let new_seg: Vec<char> = seg.chars().collect();
+            if seg.len() == 0 {
+                return false;
+            }
+            if new_seg[0] == '0'  && seg.len() != 1{
+                return false;
+            }
+
+            match seg.parse::<i32>() {
+                Ok(n) => match n.cmp(&255) {
+                    Ordering::Less => (),
+                    Ordering::Equal => (),
+                    Ordering::Greater => return false,
+                }
+                Err(error) => return false
+            }
+        }
+        return true;
+}
+pub fn check_ip_v6(ipv6:Vec<&str>)->bool {
+    for seg in ipv6 {
+        if seg.len() < 1 || seg.len() > 4 {
+            return false;
+        }
+        let new_seg: Vec<char> = seg.chars().collect();
+        for c in new_seg {
+            if !c.is_ascii_hexdigit() {
+                println!("{}", c);
+                return false;
+            } 
+        }
+    }
+    return true;
+}
+impl Solution {
+    pub fn valid_ip_address(query_ip: String) -> String {
+        let mt: Vec<&str> = query_ip.split(":").collect();
+        let m: Vec<&str> = query_ip.split(".").collect();
+        let mut ans = false;
+        if(m.len() == 4){
+            ans = check_ip_v4(m);
+            if ans {
+                return "IPv4".to_string();
+            }
+        }
+        if(mt.len() == 8){
+            ans = check_ip_v6(mt);
+            if ans {
+                return "IPv6".to_string();
+            }
+        }
+        return "Neither".to_string();
+    }
+}
