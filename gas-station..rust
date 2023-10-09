@@ -1,0 +1,21 @@
+impl Solution {
+    pub fn can_complete_circuit(gas: Vec<i32>, cost: Vec<i32>) -> i32 {
+        let mut curSum = 0;
+        let mut totalCost = 0;
+        let mut totalGas = 0;
+        let mut start = 0;
+        for (i,el) in gas.iter().enumerate() {
+            totalCost = totalCost + cost[i];
+            totalGas = totalGas +  el;
+            curSum = curSum + (el - cost[i]);
+            if curSum < 0 {
+                start = i as i32 + 1;
+                curSum = 0;
+            }
+        }
+        if totalCost > totalGas {
+            return -1;
+        }
+        start
+    }
+}
