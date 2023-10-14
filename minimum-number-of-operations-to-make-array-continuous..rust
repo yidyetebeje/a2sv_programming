@@ -1,0 +1,20 @@
+use std::collections::BTreeSet;
+use std::cmp::min;
+impl Solution {
+    pub fn min_operations(nums: Vec<i32>) -> i32 {
+        let sz = nums.len();
+        let hash_set: BTreeSet<_> = nums.into_iter().collect();
+        let nums: Vec<_> = hash_set.into_iter().collect();
+        let mut l = 0;
+        let mut r = 0;
+        let mut ans = i32::MAX;
+        while r < nums.len() {
+            while r < nums.len() && nums[l] + sz as i32 - 1 >= nums[r] {
+                r += 1;
+            }
+            ans = min(ans, sz as i32 - (r - l) as i32);
+            l += 1;
+        }
+        ans
+    }
+}
