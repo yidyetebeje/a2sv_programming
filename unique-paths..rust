@@ -1,0 +1,34 @@
+pub fn recursive(i: usize, j: usize,m: usize, n: usize, dp: &mut Vec<Vec<i32>>) -> i32{
+    if i >= m || j >= n {
+        return 0;
+    }
+    else if i == m - 1 && j == n - 1 {
+        return 1;
+    }
+    if dp[i][j] != -1 {
+        return dp[i][j];
+    }
+    dp[i][j] = recursive(i + 1, j, m, n, dp) + recursive(i, j + 1, m , n, dp);
+    dp[i][j]
+}
+pub fn bottomup(m: usize, n: usize)->i32{
+    let mut dp = vec![vec![0 as i32;n + 1 as usize];m + 1 as usize];  
+    
+    for i in (0..m).rev() {
+        for j in (0..n).rev() {
+            if i == m - 1 && j == n - 1 {
+                dp[i][j] = 1;
+            } else {
+                dp[i][j] = dp[i + 1][j] + dp[i][j + 1];
+            }
+        }
+    }
+    return dp[0][0];
+}
+impl Solution {
+    pub fn unique_paths(m: i32, n: i32) -> i32 {  
+        // let mut dp = vec![vec![-1 as i32;n as usize];m as usize];  
+        // return recursive(0,0, m as usize, n as usize, &mut dp);
+        return bottomup(m as usize, n as usize);
+    }
+}
