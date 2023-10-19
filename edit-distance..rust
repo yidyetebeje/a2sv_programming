@@ -1,0 +1,29 @@
+pub fn recursive(i: usize, j: usize,word1: &Vec<char> , word2: &Vec<char> , dp: &mut Vec<Vec<i32>>)->i32{
+    if i == word1.len() && j == word2.len() {
+        return 0;
+    }
+    if i >= word1.len(){
+        return (word2.len() - j) as i32;
+    }
+    if j >= word2.len() {
+        return (word1.len() - i) as i32;
+    }
+    if dp[i][j] != -1 {
+        return dp[i][j];
+    }
+    if word1[i] == word2[j] {
+        dp[i][j] = recursive(i + 1, j + 1, word1, word2, dp);
+        return dp[i][j];
+    }
+    let ans = vec![1 + recursive(i + 1, j, word1, word2, dp), 1 + recursive(i, j + 1, word1, word2, dp),1 + recursive(i + 1, j + 1, word1, word2, dp)];
+    dp[i][j] = *ans.iter().min().unwrap();
+    dp[i][j]
+}
+impl Solution {
+    pub fn min_distance(word1: String, word2: String) -> i32 {
+        let word1: Vec<char> = word1.chars().collect();
+        let word2: Vec<char> = word2.chars().collect();
+        let mut dp = vec![vec![-1.0 as i32;word2.len()];word1.len()];
+        return recursive(0, 0, &word1, &word2, &mut dp);
+    }
+}
