@@ -1,0 +1,27 @@
+use std::collections::HashMap;
+fn recursive(sum: i32, target: i32, i: usize, nums: &Vec<i32>, dp:&mut HashMap<(usize, i32), bool>) -> bool{
+    if sum > target || i >= nums.len() {
+        return false;
+    }
+    if sum == target {
+        return true;
+    }
+    if dp.contains_key(&(i, sum)){
+        return *dp.get(&(i,sum)).unwrap();
+    }
+    let ans = recursive(sum + nums[i], target, i + 1, nums, dp) || recursive(sum, target, i + 1, nums, dp);
+    dp.insert((i,sum), ans);
+    return *dp.get(&(i,sum)).unwrap();
+}
+impl Solution {
+    pub fn can_partition(nums: Vec<i32>) -> bool {
+        
+        let mut target: i32 = nums.iter().sum();
+        if target % 2 != 0{
+            return false;
+        }
+        let x = (target / 2) as usize;
+        let mut dp: HashMap<(usize,i32), bool> = HashMap::new();
+        return recursive(0,target /2, 0, &nums, &mut dp);
+    }   
+}
